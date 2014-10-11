@@ -1,4 +1,4 @@
-from ncindex import db
+from . import db
 
 class Instructor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +13,9 @@ class Instructor(db.Model):
 
     def __repr__(self):
         return "<Instructor: {}>".format(self.name)
+
+    def num_ratings(self):
+        return len(self.ratings)
 
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,10 +41,11 @@ class Course(db.Model):
     number = db.Column(db.String(100))
     name = db.Column(db.String(500))
 
-    def __init__(self, id, department, number):
+    def __init__(self, id, department, number, name):
         self.id = id
         self.department = department
         self.number = number
+        self.name = name
 
     def __str__(self):
         return "{0} {1}".format(self.department.code, self.number)
@@ -92,7 +96,7 @@ class Rating(db.Model):
         self.instructor = instructor
         self.overall = overall
         self.assignments = assignments
-        self.exams = exam
+        self.exams = exams
         self.helpfulness = helpfulness
         self.enthusiasm = enthusiasm
         self.comment = comment
