@@ -1,3 +1,4 @@
+import re
 from . import db
 
 class Instructor(db.Model):
@@ -28,7 +29,7 @@ class Instructor(db.Model):
     def courses(self):
         return sorted(set(rating.course for rating in self.ratings
                           if rating.course is not None),
-                      key=lambda course: str(course))
+                      key=lambda c: c.key())
 
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +68,11 @@ class Course(db.Model):
         return "<Course: {0} {1}>".format(self.department.code,
                                           self.number)
 
+    def key(self):
+        numtup = re.match("([A-Z]*)(\d+)([A-Z]*)", self.number).group(2, 3, 1)
+        return (self.department.name, int(numtup[0])) + numtup[1:]
+
+
 class Term(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     season = db.Column(db.String(10))
@@ -81,6 +87,12 @@ class Term(db.Model):
 
     def __repr__(self):
         return "<Term: {0} {1}>".format(self.season, self.year)
+
+    def key(self):
+        seasonmap = {"Spring": 0, "Summer": 1, "Fall": 2}
+        if self.season not in seasonmap.keys():
+            return (-self.year, -1)
+        return (-self.year, seasonmap[self.season])
 
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -128,3 +140,8 @@ class Rating(db.Model):
     @property
     def hascomment(self):
         return len(comment) > 0
+
+    def key(self):
+        ckey = self.course.key()
+        tkey = self.term.key()
+        return ckey + tkey + (self.instructor.name, )

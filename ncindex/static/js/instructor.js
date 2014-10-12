@@ -1,6 +1,6 @@
 function selectcallback () {
     var cids = $("#courseSelect").val();
-    $(".panel").each(function (index) {
+    $(".rating-panel").each(function (index) {
         if (cids != null) {
             var showpanel = false;
             for (var j = 0; j < cids.length; j++) {
