@@ -1,13 +1,51 @@
 {% extends "layout.html" %}
 {% block title %} Home {% endblock %}
 {% block body %}
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h1>NCIndex <small>an easier index for Ninja Courses</small></h1>
-        <hr>
-        <p>Welcome to NCIndex!</p>
-      </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table id="instructorTable"
+             class="table table-bordered table-condensed table-hover text-center"
+             width="100%"
+             cellspacing="0">
+        <thead>
+          <tr>
+            <th width="22%">Instructor</th>
+            <th width="13%">Ratings</th>
+            <th width="13%">Overall</th>
+            <th width="13%">Assignments</th>
+            <th width="13%">Exams</th>
+            <th width="13%">Helpfulness</th>
+            <th width="13%">Enthusiasm</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for instructor in instructors %}
+          <tr>
+            <td>
+              <a href="{{ url_for('instructor', instructor_id=instructor.id) }}">
+              {{ instructor.name }}</a>
+              [<a href="{{ instructor.ninjaurl }}">NC</a>]
+            </td>
+            <td>{{ instructor.numratings }}</td>
+            <td class="rating overall">{{ instructor.overall }}</td>
+            <td class="rating assignments">{{ instructor.assignments }}</td>
+            <td class="rating exams">{{ instructor.exams }}</td>
+            <td class="rating helpfulness">{{ instructor.helpfulness }}</td>
+            <td class="rating enthusiasm">{{ instructor.enthusiasm }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
+{% endblock %}
+{% block javascript %}
+  <script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dataTables.bootstrap.js') }}"></script>
+  <script>
+    $("th").addClass("text-center");
+    $(document).ready(function() {
+      $("#instructorTable").DataTable();
+    });
+  </script>
 {% endblock %}

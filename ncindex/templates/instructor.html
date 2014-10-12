@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block css %}
+  <link href="{{ url_for('static', filename='css/chosen.min.css') }}"
+        rel="stylesheet">
+{% endblock %}
+{% block title %} {{ instructor.name }} {% endblock %}
+{% block body %}
+  <div class="row">
+    <div class="col-md-12">
+      <h2>{{ instructor.name }}
+        <small><a href="{{ instructor.ninjaurl }}">on Ninja Courses</a></small>
+      </h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            Average Ratings
+            <small>based on {{ instructor.numratings }} ratings</small>
+          </h3>
+        </div>
+        <table class="table table-condensed text-center">
+           <thead>
+            <tr>
+              <th width="20%">Overall</th>
+              <th width="20%">Assignments</th>
+              <th width="20%">Exams</th>
+              <th width="20%">Helpfulness</th>
+              <th width="20%">Enthusiasm</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rating overall">{{ instructor.overall }}</td>
+              <td class="rating assignments">{{ instructor.assignments }}</td>
+              <td class="rating exams">{{ instructor.exams }}</td>
+              <td class="rating helpfulness">{{ instructor.helpfulness }}</td>
+              <td class="rating enthusiasm">{{ instructor.enthusiasm }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Course Filter</h3>
+        </div>
+        <div class="panel-body">
+          <select id="courseSelect"
+                  data-placeholder="Choose a course."
+                  class="chosen-select"
+                  multiple>
+            <option value=""></option>
+            {% for course in courses %}
+            <option value="{{ course.id }}">{{ course }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Instructor Ratings</h3>
+        </div>
+        <div class="panel-body">
+          {% for rating in ratings %}
+          <div class="panel panel-default rating-panel course{{ rating.course.id }}">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                {{ rating.course }} ({{ rating.term }})
+              </h4>
+            </div>
+            <table class="table table-condensed text-center"
+                   width="100%">
+               <thead>
+                <tr>
+                  <th class="text-center" width="20%">Overall</th>
+                  <th class="text-center" width="20%">Assignments</th>
+                  <th class="text-center" width="20%">Exams</th>
+                  <th class="text-center" width="20%">Helpfulness</th>
+                  <th class="text-center" width="20%">Enthusiasm</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="rating overall">{{ rating.overall }}</td>
+                  <td class="rating assignments">{{ rating.assignments }}</td>
+                  <td class="rating exams">{{ rating.exams }}</td>
+                  <td class="rating helpfulness">{{ rating.helpfulness }}</td>
+                  <td class="rating enthusiasm">{{ rating.enthusiasm }}</td>
+                </tr>
+              </tbody>
+            </table>
+            {% if rating.comment %}
+            <div class="panel-body">
+              <p><strong>Comment</strong>: {{ rating.comment }}</p>
+            </div> 
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascript %}
+  <script src="{{ url_for('static', filename='js/chosen.jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/instructor.js') }}"></script>
+{% endblock %}

@@ -3,6 +3,12 @@ from . import db
 class Instructor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
+    numratings = db.Column(db.Integer)
+    overall = db.Column(db.Integer)
+    assignments = db.Column(db.Integer)
+    exams = db.Column(db.Integer)
+    helpfulness = db.Column(db.Integer)
+    enthusiasm = db.Column(db.Integer)
 
     def __init__(self, id, name):
         self.id = id
@@ -14,8 +20,15 @@ class Instructor(db.Model):
     def __repr__(self):
         return "<Instructor: {}>".format(self.name)
 
-    def num_ratings(self):
-        return len(self.ratings)
+    @property
+    def ninjaurl(self):
+        return "http://ninjacourses.com/ratings/view/instructor/{}/".\
+                format(self.id)
+    @property
+    def courses(self):
+        return sorted(set(rating.course for rating in self.ratings
+                          if rating.course is not None),
+                      key=lambda course: str(course))
 
 class Department(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -111,3 +124,7 @@ class Rating(db.Model):
                                                          self.instructor,
                                                          self.course,
                                                          self.term)
+
+    @property
+    def hascomment(self):
+        return len(comment) > 0
