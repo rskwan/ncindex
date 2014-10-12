@@ -1,4 +1,3 @@
-import re
 from flask import render_template
 from . import app
 from .models import Instructor
@@ -10,7 +9,7 @@ def index():
 
 @app.route('/instructor/<int:instructor_id>')
 def instructor(instructor_id):
-    instructor = Instructor.query.filter_by(id=instructor_id).first_or_404()
+    instructor = Instructor.query.get_or_404(instructor_id)
     sorted_ratings = sorted(instructor.ratings, key=lambda r: r.key())
     return render_template("instructor.html",
                            instructor=instructor,
