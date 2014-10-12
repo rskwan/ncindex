@@ -1,2 +1,2 @@
-from ncindex import app, db
-app.run(debug=True)
+from ncindex import app
+app.run()
