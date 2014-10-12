@@ -33,7 +33,6 @@ def run():
 def scrape_root(data, limit=None):
     """Reads and stores all departments, then returns a list of
     department URL pairs."""
-    limit = 10
     soup = BeautifulSoup(requests.get(data['url']).text)
     depts = []
     for deptlist in soup.find_all(id=re.compile("^deptlist")):
