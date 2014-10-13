@@ -69,6 +69,7 @@ class Course(db.Model):
                                           self.number)
 
     def key(self):
+        """Course number precendence: integer > suffix > prefix."""
         numtup = re.match("([A-Z]*)(\d+)([A-Z]*)", self.number).group(2, 3, 1)
         return (self.department.name, int(numtup[0])) + numtup[1:]
 
@@ -89,7 +90,8 @@ class Term(db.Model):
         return "<Term: {0} {1}>".format(self.season, self.year)
 
     def key(self):
-        seasonmap = {"Spring": 0, "Summer": 1, "Fall": 2}
+        """Ordered so that least recent terms are greatest."""
+        seasonmap = {"Spring": 2, "Summer": 1, "Fall": 0}
         if self.season not in seasonmap.keys():
             return (-self.year, -1)
         return (-self.year, seasonmap[self.season])
@@ -142,6 +144,7 @@ class Rating(db.Model):
         return len(comment) > 0
 
     def key(self):
+        """Precedence: course > term > instructor name."""
         ckey = self.course.key()
         tkey = self.term.key()
         return ckey + tkey + (self.instructor.name, )
