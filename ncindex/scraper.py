@@ -60,13 +60,20 @@ def scrape_dept(data):
     courses = []
     if courselist is not None:
         for courseentry in courselist.find_all('li'):
-            name = courseentry.contents[-1][3:]
-            number = courseentry.a['href'].split("/")[-2]
-            coursedata = { 'department': data['department'],
-                           'number': number,
-                           'name': name,
-                           'url': 'http://ninjacourses.com' + courseentry.a['href'] }
-            courses.append(("course", coursedata)) 
+            for content in courseentry.contents:
+                try:
+                    if content.startswith(' - '):
+                        name = content[3:]
+                        number = courseentry.a['href'].split("/")[-2]
+                        coursedata = { 'department': data['department'],
+                                       'number': number,
+                                       'name': name,
+                                       'url': 'http://ninjacourses.com' \
+                                               + courseentry.a['href'] }
+                        courses.append(("course", coursedata))
+                        break
+                except TypeError:
+                    pass
     return courses
 
 def scrape_course(data):
